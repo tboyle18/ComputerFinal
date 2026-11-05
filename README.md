@@ -39,6 +39,6 @@ results/       Results grid, raw scan output, screenshots
 - `codeUrl`: already points at each build folder in this repo.
 - `RESULTS`: fill in Pass/Fail per test once testing is done.
 
-To deploy it on Cloudflare Pages: connect this repo, leave the build command empty, and set the output directory to `homepage`. Put the homepage and every build behind Cloudflare Access so only the team and instructor can reach them.
+To deploy it on Cloudflare: Workers & Pages → Create → Import a repository → pick this repo. Name the project `computerfinal` (it must match `name` in `wrangler.jsonc`), leave the build command empty, and keep the deploy command as `npx wrangler deploy`. `wrangler.jsonc` tells Cloudflare to serve only the `homepage/` folder. Put the homepage and every build behind Cloudflare Access so only the team and instructor can reach them.
 
 To view it locally, open `homepage/index.html` in a browser.
