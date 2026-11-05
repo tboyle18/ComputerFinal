@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Cloudflare / Wrangler local state
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# Environment and secrets: never commit real keys
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+.output/
+.vite/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
