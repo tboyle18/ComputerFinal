@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-Coded Marketplace Security</title>
+<meta name="description" content="Computer Security Final Project: four AI-built marketplace apps, one fixed security test plan.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f3f0e8;
+    --surface: #ffffff;
+    --ink: #0c0c10;
+    --muted: #55575f;
+    --line: #0c0c10;
+    --hair: #d9d5ca;
+    --hero-bg: #0c0c10;
+    --hero-ink: #f3f0e8;
+    --hero-muted: #a3a3ad;
+    --red: #ff4a1c;
+    --red-ink: #0c0c10;
+    --green: #1fd17f;
+    --green-ink: #0c0c10;
+    --shadow: 6px 6px 0 var(--ink);
+    --display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0c0c10;
+      --surface: #16161c;
+      --ink: #f3f0e8;
+      --muted: #a3a3ad;
+      --line: #f3f0e8;
+      --hair: #2c2c35;
+      --hero-bg: #050507;
+      --shadow: 6px 6px 0 var(--red);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 500 16px/1.6 var(--display);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+  .mono { font-family: var(--mono); }
+
+  /* ---------- Nav ---------- */
+  nav.top {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--hero-bg); color: var(--hero-ink);
+    border-bottom: 3px solid var(--red);
+  }
+  nav.top .wrap { display: flex; align-items: center; gap: 28px; height: 58px; }
+  nav.top .brand { font: 800 14px/1 var(--mono); text-decoration: none; letter-spacing: .02em; white-space: nowrap; display: flex; align-items: center; gap: 10px; }
+  nav.top .brand i { width: 12px; height: 12px; background: var(--red); display: inline-block; }
+  nav.top .links { display: flex; gap: 22px; margin-left: auto; }
+  nav.top .links a { font: 700 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; text-decoration: none; color: var(--hero-muted); }
+  nav.top .links a:hover { color: var(--hero-ink); }
+
+  /* ---------- Hero ---------- */
+  header.hero {
+    background-image:
+      linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 44px 44px;
+    background-color: var(--hero-bg);
+    color: var(--hero-ink);
+    padding: 88px 0 0;
+    overflow: hidden;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: 800 13px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
+    background: var(--red); color: var(--red-ink); padding: 10px 14px;
+  }
+  h1 {
+    font: 700 clamp(48px, 9vw, 112px)/.92 var(--display);
+    letter-spacing: -0.045em;
+    margin: 28px 0 0;
+    text-transform: uppercase;
+  }
+  h1 .outline { color: transparent; -webkit-text-stroke: 2px var(--hero-ink); }
+  h1 .hl { color: var(--red); }
+  .lede { font-size: clamp(18px, 2vw, 22px); color: var(--hero-muted); max-width: 720px; margin: 28px 0 0; line-height: 1.5; }
+  .lede b { color: var(--hero-ink); }
+
+  .rq {
+    margin: 56px 0 0; padding: 32px 0 36px;
+    border-top: 3px solid var(--hero-ink);
+    display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start;
+  }
+  .rq .label { font: 800 13px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--red); }
+  .rq p { margin: 0; font: 700 clamp(24px, 3.4vw, 40px)/1.15 var(--display); letter-spacing: -0.02em; }
+  .rq p em { font-style: normal; background: var(--red); color: var(--red-ink); padding: 0 .15em; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 3px solid var(--hero-ink); }
+  .stat { padding: 26px 0 30px; }
+  .stat + .stat { border-left: 1px solid rgba(255,255,255,.18); padding-left: 24px; }
+  .stat b { display: block; font: 700 clamp(48px, 6vw, 76px)/1 var(--display); letter-spacing: -0.04em; }
+  .stat span { font: 700 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--hero-muted); }
+
+  /* ---------- Sections ---------- */
+  section { padding: 96px 0; border-bottom: 3px solid var(--line); }
+  .sec-head { display: grid; grid-template-columns: 220px 1fr; gap: 24px; margin-bottom: 48px; }
+  .sec-num { font: 800 13px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--red); padding-top: 12px; }
+  h2 { font: 700 clamp(38px, 5.4vw, 68px)/.95 var(--display); letter-spacing: -0.035em; margin: 0; text-transform: uppercase; }
+  .sub { color: var(--muted); margin: 18px 0 0; max-width: 680px; font-size: 18px; }
+
+  /* ---------- Build cards ---------- */
+  .grid-builds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .card {
+    background: var(--surface); border: 3px solid var(--line); box-shadow: var(--shadow);
+    display: flex; flex-direction: column;
+  }
+  .card-band {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 18px 22px; border-bottom: 3px solid var(--line);
+  }
+  .card.v1 .card-band { background: var(--red); color: var(--red-ink); }
+  .card.v2 .card-band { background: var(--green); color: var(--green-ink); }
+  .build-id { font: 800 clamp(36px, 4.6vw, 52px)/1 var(--mono); letter-spacing: -0.03em; }
+  .variant { font: 800 12px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .1em; text-align: right; }
+  .card-body { padding: 22px; display: flex; flex-direction: column; gap: 18px; flex: 1; }
+  .meta { display: grid; grid-template-columns: repeat(3, 1fr); border: 2px solid var(--line); }
+  .meta div { padding: 10px 12px; }
+  .meta div + div { border-left: 2px solid var(--line); }
+  .meta dt { font: 800 10px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 6px; }
+  .meta dd { margin: 0; font-weight: 700; font-size: 15px; line-height: 1.25; word-break: break-word; }
+  .meta dd code { font: 700 12px var(--mono); }
+
+  details.prompt { border: 2px solid var(--line); }
+  details.prompt summary {
+    cursor: pointer; padding: 12px 14px; list-style: none;
+    display: flex; justify-content: space-between; align-items: center;
+    font: 800 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em;
+  }
+  details.prompt summary::-webkit-details-marker { display: none; }
+  details.prompt summary::after { content: "+"; font: 800 20px/1 var(--mono); }
+  details.prompt[open] summary { border-bottom: 2px solid var(--line); }
+  details.prompt[open] summary::after { content: "–"; }
+  .prompt-body { padding: 14px; }
+  .prompt-body pre {
+    margin: 0; white-space: pre-wrap; overflow-wrap: anywhere;
+    font: 500 13px/1.6 var(--mono); max-height: 360px; overflow: auto;
+  }
+  .prompt-body mark { background: var(--green); color: var(--green-ink); }
+  .copy {
+    margin-top: 12px; font: 800 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em;
+    background: var(--ink); color: var(--paper); border: 0; padding: 9px 12px; cursor: pointer;
+  }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; }
+  .btn {
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    padding: 14px 16px; text-decoration: none; border: 3px solid var(--line);
+    font: 800 13px/1.1 var(--mono); text-transform: uppercase; letter-spacing: .06em;
+    background: var(--surface); color: var(--ink);
+    transition: transform .08s, box-shadow .08s;
+  }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn:not([aria-disabled="true"]):hover { transform: translate(-3px, -3px); box-shadow: 3px 3px 0 var(--red); }
+  .btn[aria-disabled="true"] { cursor: not-allowed; background: repeating-linear-gradient(-45deg, transparent 0 8px, color-mix(in srgb, var(--ink) 7%, transparent) 8px 16px); color: var(--muted); border-style: dashed; }
+  .btn .soon { font-size: 10px; letter-spacing: .1em; opacity: .85; }
+
+  /* ---------- Design matrix ---------- */
+  .matrix { display: grid; grid-template-columns: 1.1fr 1fr 1fr; border: 3px solid var(--line); background: var(--surface); }
+  .matrix > div { padding: 22px; border-right: 3px solid var(--line); border-bottom: 3px solid var(--line); }
+  .matrix > div:nth-child(3n) { border-right: 0; }
+  .matrix > div:nth-last-child(-n+3) { border-bottom: 0; }
+  .matrix .colh { font: 800 12px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .1em; background: var(--ink); color: var(--paper); }
+  .matrix .rowh b { display: block; font-size: 24px; letter-spacing: -0.02em; line-height: 1.1; }
+  .matrix .rowh span { font: 700 12px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+  .matrix .cell { font: 800 clamp(26px, 3.4vw, 40px)/1 var(--mono); letter-spacing: -0.03em; display: flex; align-items: center; }
+  .matrix .cell.v1 { background: var(--red); color: var(--red-ink); }
+  .matrix .cell.v2 { background: var(--green); color: var(--green-ink); }
+
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 28px; }
+  .panel { background: var(--surface); border: 3px solid var(--line); padding: 24px 26px; }
+  .panel h3 { margin: 0 0 14px; font: 800 13px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; }
+  .panel h3 ~ h3 { margin-top: 24px; }
+  .panel ul { margin: 0; padding: 0; list-style: none; }
+  .panel li { padding: 9px 0 9px 26px; position: relative; border-top: 1px solid var(--hair); font-size: 16px; }
+  .panel li:first-child { border-top: 0; }
+  .panel li::before { content: ""; position: absolute; left: 0; top: 17px; width: 10px; height: 10px; background: var(--red); }
+
+  /* ---------- Steps ---------- */
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); border-top: 3px solid var(--line); border-left: 3px solid var(--line); }
+  ol.steps li {
+    counter-increment: s; background: var(--surface);
+    border-right: 3px solid var(--line); border-bottom: 3px solid var(--line);
+    padding: 22px 22px 22px 92px; position: relative; min-height: 100px;
+  }
+  ol.steps li::before {
+    content: counter(s, decimal-leading-zero); position: absolute; left: 22px; top: 16px;
+    font: 800 40px/1 var(--mono); letter-spacing: -0.04em; color: var(--red);
+  }
+  ol.steps b { display: block; font-size: 19px; letter-spacing: -0.01em; }
+  ol.steps span { color: var(--muted); font-size: 15px; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; border: 3px solid var(--line); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--hair); vertical-align: middle; }
+  thead th { background: var(--ink); color: var(--paper); font: 800 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; white-space: nowrap; padding: 16px; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: color-mix(in srgb, var(--red) 8%, transparent); }
+  td.id { font: 800 14px var(--mono); white-space: nowrap; }
+  td.test { font-weight: 700; }
+  .owasp { display: inline-block; font: 800 11px/1 var(--mono); padding: 6px 8px; border: 2px solid var(--line); white-space: nowrap; }
+  td.tool { color: var(--muted); font: 500 13px var(--mono); }
+  th.res, td.res { text-align: center; }
+  .pill { display: inline-block; font: 800 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; padding: 7px 10px; border: 2px dashed var(--muted); color: var(--muted); }
+  .pill.pass { border: 2px solid var(--line); background: var(--green); color: var(--green-ink); }
+  .pill.fail { border: 2px solid var(--line); background: var(--red); color: var(--red-ink); }
+
+  .legend { display: grid; grid-template-columns: repeat(4, 1fr); border: 3px solid var(--line); margin-bottom: 28px; background: var(--surface); }
+  .legend div { padding: 16px 18px; }
+  .legend div + div { border-left: 3px solid var(--line); }
+  .legend b { display: block; font: 800 12px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+  .legend span { color: var(--muted); font-size: 14px; }
+
+  /* ---------- Footer ---------- */
+  footer { background: var(--hero-bg); color: var(--hero-muted); padding: 40px 0; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font: 700 12px/1.6 var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+  footer a { color: var(--hero-ink); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px) {
+    nav.top .links { display: none; }
+    header.hero { padding-top: 56px; }
+    .rq, .sec-head { grid-template-columns: 1fr; gap: 12px; }
+    .sec-head { margin-bottom: 32px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(3) { border-left: 0; padding-left: 0; }
+    .stat:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.18); }
+    section { padding: 64px 0; }
+    .grid-builds, .panels, ol.steps { grid-template-columns: 1fr; }
+    .legend { grid-template-columns: 1fr 1fr; }
+    .legend div:nth-child(3) { border-left: 0; }
+    .legend div:nth-child(n+3) { border-top: 3px solid var(--line); }
+  }
+  @media (max-width: 520px) {
+    .meta { grid-template-columns: 1fr 1fr; }
+    .meta div:nth-child(3) { grid-column: 1 / -1; border-left: 0; border-top: 2px solid var(--line); }
+    .actions { grid-template-columns: 1fr; }
+    .matrix > div { padding: 14px; }
+    .matrix .rowh b { font-size: 18px; }
+    ol.steps li { padding-left: 74px; }
+    ol.steps li::before { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>AI MARKETPLACE SECURITY</a>
+    <div class="links">
+      <a href="#builds">Builds</a>
+      <a href="#design">Design</a>
+      <a href="#method">Method</a>
+      <a href="#tests">Tests</a>
+      <a href="#results">Results</a>
+      <a href="#scope">Scope</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="badge">Computer Security Final Project</span>
+    <h1>AI-Coded<br><span class="outline">Marketplace</span><br><span class="hl">Security</span></h1>
+    <p class="lede">Two AI models. Two prompts. <b>Four builds of the same marketplace</b>, all put through one fixed security test plan to see which vulnerabilities each one ships with.</p>
+
+    <div class="rq">
+      <div class="label">// Research question</div>
+      <p>Does <em>one added line</em> asking for security change what an AI-built web app ships with?</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>2</b><span>AI models</span></div>
+      <div class="stat"><b>2</b><span>Prompts</span></div>
+      <div class="stat"><b>4</b><span>Builds</span></div>
+      <div class="stat"><b>18</b><span>Test cases</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="builds">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">01 / Builds</div>
+      <div>
+        <h2>The four builds</h2>
+        <p class="sub">Each build runs on its own subdomain, never a shared path, so builds can't share cookies or storage and skew the session and CSRF tests.</p>
+      </div>
+    </div>
+    <div class="grid-builds" id="buildGrid"></div>
+  </div>
+</section>
+
+<section id="design">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">02 / Design</div>
+      <div>
+        <h2>One variable</h2>
+        <p class="sub">A 2 × 2 design. The only thing that changes between V1 and V2 is a security paragraph at the top of the prompt.</p>
+      </div>
+    </div>
+
+    <div class="matrix" role="table" aria-label="Build matrix">
+      <div class="colh" role="columnheader">Model</div>
+      <div class="colh" role="columnheader">V1 · Base prompt</div>
+      <div class="colh" role="columnheader">V2 · + Security line</div>
+
+      <div class="rowh" role="rowheader"><b>Haiku 4.5</b><span>Low effort</span></div>
+      <div class="cell v1" role="cell">A-V1</div>
+      <div class="cell v2" role="cell">A-V2</div>
+
+      <div class="rowh" role="rowheader"><b>Opus 5.5</b><span>Max effort</span></div>
+      <div class="cell v1" role="cell">B-V1</div>
+      <div class="cell v2" role="cell">B-V2</div>
+    </div>
+
+    <div class="panels">
+      <div class="panel">
+        <h3>Held constant</h3>
+        <ul>
+          <li>The tech stack (Cloudflare front end, named in the prompt)</li>
+          <li>The feature list and base prompt</li>
+          <li>The coding tool, with a fresh project and session per build</li>
+          <li>Identical seed data: 2 users, 1 admin, a few listings and messages</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Every build must have</h3>
+        <ul>
+          <li>Sign up, log in, log out, and a profile page</li>
+          <li>Create, edit and delete listings with photos</li>
+          <li>Browse with search and category filters</li>
+          <li>Message a seller about a listing</li>
+          <li>Cart, simulated checkout and order history</li>
+          <li>Admin dashboard to remove users and listings</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">03 / Method</div>
+      <div>
+        <h2>Ten steps</h2>
+        <p class="sub">The test plan is written and committed before any build exists, so nothing we see in the code can shape how we test it.</p>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><b>Lock the spec</b><span>Pick the models and coding tool, write the feature list, base prompt and security line.</span></li>
+      <li><b>Write and lock the test plan</b><span>Exact steps and payloads for every test, committed to the repo first.</span></li>
+      <li><b>Generate the 4 builds</b><span>Fresh session per build. Every prompt and follow-up logged word for word.</span></li>
+      <li><b>Check feature parity</b><span>One logged follow-up per missing feature, and never one about security.</span></li>
+      <li><b>Deploy in the lab</b><span>Own subdomain, database and storage per build, with identical seed data.</span></li>
+      <li><b>Run automated scans</b><span>OWASP ZAP, Semgrep, gitleaks and npm audit, saving the raw output.</span></li>
+      <li><b>Run the manual tests</b><span>The same checklist in Burp Suite, in the same order, with screenshots.</span></li>
+      <li><b>Classify the findings</b><span>Fill the results grid, sort findings, rate confirmed vulns with CVSS 3.1.</span></li>
+      <li><b>Remediate and retest</b><span>For the 5–7 most meaningful vulns: exploit, fix, rerun the same test.</span></li>
+      <li><b>Write up and present</b><span>Report, exploit demos, prompt log and the results grid.</span></li>
+    </ol>
+
+    <div class="panels">
+      <div class="panel">
+        <h3>Toolkit</h3>
+        <ul>
+          <li><b>OWASP ZAP</b> for automated scanning</li>
+          <li><b>Burp Suite</b> for manual testing (Repeater, Intruder)</li>
+          <li><b>Semgrep</b> for static code analysis</li>
+          <li><b>gitleaks</b> for secret scanning</li>
+          <li><b>npm audit</b> for dependency checks</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Framework</h3>
+        <ul>
+          <li>OWASP Web Security Testing Guide (WSTG)</li>
+          <li>OWASP Top 10 (2021)</li>
+          <li>CVSS 3.1 for severity ratings</li>
+          <li>Scanners catch surface issues; Burp catches the logic flaws they miss</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tests">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">04 / Test plan</div>
+      <div>
+        <h2>18 attacks</h2>
+        <p class="sub">Mapped to the OWASP Top 10 (2021) and run on every build in the same order. Each records the exact request, the expected secure behavior, what actually happened, and a screenshot.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Test</th><th>OWASP</th><th>Tool</th></tr></thead>
+        <tbody id="testRows"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">05 / Results</div>
+      <div>
+        <h2>The grid</h2>
+        <p class="sub">Pass or Fail per test, per build. This fills in once testing is done, along with links to the exploit demos.</p>
+      </div>
+    </div>
+    <div class="legend">
+      <div><b>Fixed in V2</b><span>V1 failed, V2 passed</span></div>
+      <div><b>Still present</b><span>Both failed</span></div>
+      <div><b>New in V2</b><span>Only V2 failed</span></div>
+      <div><b>Never found</b><span>Both passed</span></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th class="res">A-V1</th><th class="res">A-V2</th><th class="res">B-V1</th><th class="res">B-V2</th></tr></thead>
+        <tbody id="resultRows"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="scope">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">06 / Scope</div>
+      <div><h2>Limits</h2></div>
+    </div>
+    <div class="panels" style="margin-top:0">
+      <div class="panel">
+        <h3>In scope</h3>
+        <ul>
+          <li>The app's own code: auth, sessions, access control, database queries, input handling, file uploads and secrets</li>
+        </ul>
+        <h3>Out of scope</h3>
+        <ul>
+          <li>Cloudflare's infrastructure and the database provider itself. We test how the app uses them, not the platforms.</li>
+          <li>This homepage: a hand-built static directory, not a test subject</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Limitations</h3>
+        <ul>
+          <li>AI output varies run to run, so each build is one sample, not a guarantee.</li>
+          <li>Two models only; results may not hold for other tools.</li>
+          <li>The stack may block some vulns by default (e.g. prepared statements), which we note where it happens.</li>
+          <li>Manual testing depends on our skill; the locked checklist limits that bias.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>AI-Coded Marketplace Security · Computer Security Final Project</span>
+    <span><a id="repoLink" href="#" target="_blank" rel="noopener noreferrer">GitHub repo ↗</a> · Access restricted to team and instructor</span>
+  </div>
+</footer>
+
+<template id="prompt-security">Security is the top priority for this project, above visual design. Build it as if it will go live with real users, real personal data and real money. Assume people will actively try to abuse and break into it. Follow security best practices for every part of the app, including the frontend, the Cloudflare deployment and the Supabase backend. Don't take shortcuts for convenience. When you make a security-related decision, briefly explain it.
+
+</template>
+<template id="prompt-base">Build a full-stack online marketplace web app where people can buy and sell items. You choose the name, theme, branding and visual design. Make it look polished and modern, like a real marketplace people would want to use.
+
+Tech requirements:
+● Frontend deployed on Cloudflare (Pages or Workers)
+● Supabase for the backend: database, user accounts and image storage
+
+Features:
+● Sign up, log in, log out
+● User profile page
+● Create, edit and delete listings with title, description, price, category and photos
+● Browse listings on the home page, with search and category filters
+● Listing detail page
+● Message a seller about a listing
+● Shopping cart and checkout (simulated payment, no real payment processor)
+● Order history for buyers
+● Admin dashboard where an admin can view and remove users and listings
+
+Provide the complete code, the Supabase setup (SQL for the tables and storage), and step-by-step instructions to run and deploy it. Make it look modern and sleek with react elements and take your time on building this whole.</template>
+
+<script>
+  /* ============================================================
+     EDIT HERE: fill in links as each build goes live.
+     A liveUrl left as "" shows "Not deployed yet" unless DOMAIN is set.
+     ============================================================ */
+  const REPO = "https://github.com/tboyle18/ComputerFinal";
+  const DOMAIN = "";            // e.g. "yourproject.com" → builds at https://a-v1.yourproject.com
+  const BUILDS = [
+    { id: "A-V1", model: "Haiku 4.5", effort: "Low", variant: "v1", liveUrl: "", codeUrl: REPO + "/tree/main/builds/a-v1" },
+    { id: "A-V2", model: "Haiku 4.5", effort: "Low", variant: "v2", liveUrl: "", codeUrl: REPO + "/tree/main/builds/a-v2" },
+    { id: "B-V1", model: "Opus 5.5",  effort: "Max", variant: "v1", liveUrl: "", codeUrl: REPO + "/tree/main/builds/b-v1" },
+    { id: "B-V2", model: "Opus 5.5",  effort: "Max", variant: "v2", liveUrl: "", codeUrl: REPO + "/tree/main/builds/b-v2" },
+  ];
+
+  const TESTS = [
+    ["T01", "SQL injection in search and login", "A03", "Injection", "Burp, sqlmap"],
+    ["T02", "Stored XSS in listing descriptions and messages", "A03", "Injection", "Burp"],
+    ["T03", "Edit or delete another user's listing by changing its ID", "A01", "Broken Access Control", "Burp Repeater"],
+    ["T04", "Read another user's messages", "A01", "Broken Access Control", "Burp Repeater"],
+    ["T05", "Reach admin pages or API routes as a regular user", "A01", "Broken Access Control", "Burp"],
+    ["T06", "Call API routes with no session at all", "A01", "Broken Access Control", "Burp, curl"],
+    ["T07", "CSRF on state-changing actions", "A01", "Broken Access Control", "Burp"],
+    ["T08", "Change the price or total in the checkout request", "A04", "Insecure Design", "Burp Repeater"],
+    ["T09", "Upload a non-image, oversized or script-bearing file (HTML, SVG)", "A04", "Insecure Design", "Burp"],
+    ["T10", "Brute-force login (no rate limit or lockout)", "A07", "Auth Failures", "Burp Intruder"],
+    ["T11", "Weak password rules", "A07", "Auth Failures", "Manual"],
+    ["T12", "Session cookie flags, expiry, logout invalidation", "A07", "Auth Failures", "Burp, browser"],
+    ["T13", "Passwords stored in plaintext or with a weak hash", "A02", "Cryptographic Failures", "Inspect database"],
+    ["T14", "Hardcoded secrets in source or client JS", "A05", "Misconfiguration", "gitleaks, Semgrep"],
+    ["T15", "Missing security headers (CSP, framing)", "A05", "Misconfiguration", "ZAP"],
+    ["T16", "Verbose errors or stack traces", "A05", "Misconfiguration", "ZAP, Burp"],
+    ["T17", "Known-vulnerable dependencies", "A06", "Vulnerable Components", "npm audit"],
+    ["T18", "Logins and failures not logged", "A09", "Logging Failures", "Inspect logs"],
+  ];
+
+  /* Results: once tested, e.g. RESULTS.T01 = ["Pass", "Pass", "Fail", "Pass"]  (A-V1, A-V2, B-V1, B-V2) */
+  const RESULTS = {};
+
+  /* ---------- rendering (no need to edit below) ---------- */
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  const basePrompt = document.getElementById("prompt-base").innerHTML.trim();
+  const secPrompt = document.getElementById("prompt-security").innerHTML;
+  document.getElementById("repoLink").href = REPO;
+
+  function link(url, label, primary) {
+    const cls = "btn" + (primary ? " primary" : "");
+    if (!url) return `<a class="${cls}" aria-disabled="true">${label}<span class="soon">Not deployed yet</span></a>`;
+    return `<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${label} ↗</a>`;
+  }
+
+  document.getElementById("buildGrid").innerHTML = BUILDS.map(b => {
+    const sub = b.id.toLowerCase();
+    const host = DOMAIN ? `${sub}.${esc(DOMAIN)}` : `${sub}.&lt;domain&gt;`;
+    const live = b.liveUrl || (DOMAIN ? `https://${sub}.${DOMAIN}` : "");
+    const prompt = b.variant === "v2" ? `<mark>${secPrompt}</mark>${basePrompt}` : basePrompt;
+    return `
+      <article class="card ${b.variant}">
+        <div class="card-band">
+          <div class="build-id">${b.id}</div>
+          <div class="variant">${b.variant === "v2" ? "V2<br>+ Security line" : "V1<br>Base prompt"}</div>
+        </div>
+        <div class="card-body">
+          <dl class="meta">
+            <div><dt>Model</dt><dd>${b.model}</dd></div>
+            <div><dt>Effort</dt><dd>${b.effort}</dd></div>
+            <div><dt>Host</dt><dd><code>${host}</code></dd></div>
+          </dl>
+          <details class="prompt">
+            <summary>Exact prompt used</summary>
+            <div class="prompt-body">
+              <pre>${prompt}</pre>
+              <button class="copy" type="button">Copy prompt</button>
+            </div>
+          </details>
+          <div class="actions">
+            ${link(live, "Open live app", true)}
+            ${link(b.codeUrl, "View code", false)}
+          </div>
+        </div>
+      </article>`;
+  }).join("");
+
+  document.querySelectorAll(".copy").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const text = btn.previousElementSibling.innerText;
+      try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
+      catch { btn.textContent = "Copy failed"; }
+      setTimeout(() => (btn.textContent = "Copy prompt"), 1500);
+    });
+  });
+
+  document.getElementById("testRows").innerHTML = TESTS.map(([id, name, code, cat, tool]) =>
+    `<tr><td class="id">${id}</td><td class="test">${esc(name)}</td><td><span class="owasp">${code} · ${cat}</span></td><td class="tool">${tool}</td></tr>`
+  ).join("");
+
+  document.getElementById("resultRows").innerHTML = TESTS.map(([id, name]) => {
+    const r = RESULTS[id] || [];
+    const cells = [0,1,2,3].map(i => {
+      const v = r[i] || "Pending";
+      const cls = /^pass$/i.test(v) ? "pass" : /^fail$/i.test(v) ? "fail" : "";
+      return `<td class="res"><span class="pill ${cls}">${esc(v)}</span></td>`;
+    }).join("");
+    return `<tr><td><span class="mono" style="font-weight:800">${id}</span>&nbsp;&nbsp;${esc(name)}</td>${cells}</tr>`;
+  }).join("");
+</script>
+</body>
+</html>
