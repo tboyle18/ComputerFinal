@@ -1,0 +1,11 @@
+// Cloudflare config for the project homepage only.
+// Serves the static files in ./homepage. The builds/ folders are NOT deployed by this file;
+// each build gets its own Worker and subdomain from inside its own folder.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "computerfinal",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./homepage"
+  }
+}
