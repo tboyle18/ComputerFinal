@@ -2,9 +2,10 @@
 
 | | |
 |---|---|
-| Model | Opus 5.5 (max effort) |
+| Model | Opus 5.5 (extra effort + UltraCode) |
 | Prompt | V1: base prompt ([prompts/v1-base.md](../../prompts/v1-base.md)) |
 | Lab URL | `https://b-v1.<domain>` |
+| Build time | ~1 hour |
 | Generated on | _not yet_ |
 
 This folder holds the code exactly as the AI generated it. Commit it as generated, before any testing.

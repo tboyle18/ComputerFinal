@@ -138,6 +138,19 @@
   .meta dd { margin: 0; font-weight: 700; font-size: 15px; line-height: 1.25; word-break: break-word; }
   .meta dd code { font: 700 12px var(--mono); }
 
+  .bstats { display: grid; grid-template-columns: 1.4fr 1fr 1fr; border: 2px solid var(--line); margin: 0; }
+  .bstat { padding: 14px 14px 16px; }
+  .bstat + .bstat { border-left: 2px solid var(--line); }
+  .bstat dt { font: 800 10px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 10px; }
+  .bstat dd { margin: 0; font: 700 34px/1 var(--display); letter-spacing: -0.03em; white-space: nowrap; }
+  .bstat dd small { font: 800 12px/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; margin-left: 3px; color: var(--muted); }
+  .bstat .na { color: var(--muted); font-size: 22px; }
+  .bstat dd .na { font: 800 14px/34px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+  .bar { height: 8px; margin-top: 12px; border: 2px solid var(--line); }
+  .bar i { display: block; height: 100%; background: var(--ink); }
+  .card.v1 .bar i { background: var(--red); }
+  .card.v2 .bar i { background: var(--green); }
+
   details.prompt { border: 2px solid var(--line); }
   details.prompt summary {
     cursor: pointer; padding: 12px 14px; list-style: none;
@@ -252,6 +265,10 @@
   @media (max-width: 520px) {
     .meta { grid-template-columns: 1fr 1fr; }
     .meta div:nth-child(3) { grid-column: 1 / -1; border-left: 0; border-top: 2px solid var(--line); }
+    .bstats { grid-template-columns: 1fr 1fr; }
+    .bstat.time { grid-column: 1 / -1; }
+    .bstat:nth-child(2) { border-left: 0; }
+    .bstat:nth-child(n+2) { border-top: 2px solid var(--line); }
     .actions { grid-template-columns: 1fr; }
     .matrix > div { padding: 14px; }
     .matrix .rowh b { font-size: 18px; }
@@ -328,7 +345,7 @@
       <div class="cell v1" role="cell">A-V1</div>
       <div class="cell v2" role="cell">A-V2</div>
 
-      <div class="rowh" role="rowheader"><b>Opus 5.5</b><span>Max effort</span></div>
+      <div class="rowh" role="rowheader"><b>Opus 5.5</b><span>Extra effort + UltraCode</span></div>
       <div class="cell v1" role="cell">B-V1</div>
       <div class="cell v2" role="cell">B-V2</div>
     </div>
@@ -514,10 +531,11 @@ Provide the complete code, the Supabase setup (SQL for the tables and storage), 
   const REPO = "https://github.com/tboyle18/ComputerFinal";
   const DOMAIN = "";            // e.g. "yourproject.com" → builds at https://a-v1.yourproject.com
   const BUILDS = [
-    { id: "A-V1", model: "Haiku 4.5", effort: "Low", variant: "v1", liveUrl: "", codeUrl: REPO + "/tree/main/builds/a-v1" },
-    { id: "A-V2", model: "Haiku 4.5", effort: "Low", variant: "v2", liveUrl: "", codeUrl: REPO + "/tree/main/builds/a-v2" },
-    { id: "B-V1", model: "Opus 5.5",  effort: "Max", variant: "v1", liveUrl: "", codeUrl: REPO + "/tree/main/builds/b-v1" },
-    { id: "B-V2", model: "Opus 5.5",  effort: "Max", variant: "v2", liveUrl: "", codeUrl: REPO + "/tree/main/builds/b-v2" },
+    /* minutes: approximate build time (null = not built yet). followUps: logged follow-up prompts (null = not counted yet). */
+    { id: "A-V1", model: "Haiku 4.5", effort: "Low",               variant: "v1", minutes: 5,    followUps: null, liveUrl: "", codeUrl: REPO + "/tree/main/builds/a-v1" },
+    { id: "A-V2", model: "Haiku 4.5", effort: "Low",               variant: "v2", minutes: 10,   followUps: null, liveUrl: "", codeUrl: REPO + "/tree/main/builds/a-v2" },
+    { id: "B-V1", model: "Opus 5.5",  effort: "Extra + UltraCode", variant: "v1", minutes: 60,   followUps: null, liveUrl: "", codeUrl: REPO + "/tree/main/builds/b-v1" },
+    { id: "B-V2", model: "Opus 5.5",  effort: "Extra + UltraCode", variant: "v2", minutes: null, followUps: null, liveUrl: "", codeUrl: REPO + "/tree/main/builds/b-v2" },
   ];
 
   const TESTS = [
@@ -556,7 +574,20 @@ Provide the complete code, the Supabase setup (SQL for the tables and storage), 
     return `<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${label} ↗</a>`;
   }
 
-  document.getElementById("buildGrid").innerHTML = BUILDS.map(b => {
+  const maxMinutes = Math.max(1, ...BUILDS.map(b => b.minutes || 0));
+  function fmtTime(m) {
+    if (m == null) return '<span class="na">Pending</span>';
+    if (m < 60) return `~${m}<small>min</small>`;
+    const h = Math.floor(m / 60), r = m % 60;
+    return `~${h}<small>hr</small>${r ? ` ${r}<small>min</small>` : ""}`;
+  }
+  function passCount(i) {
+    const done = TESTS.map(([id]) => (RESULTS[id] || [])[i]).filter(v => /^(pass|fail)$/i.test(v || ""));
+    if (!done.length) return '<span class="na">—/18</span>';
+    return `${done.filter(v => /^pass$/i.test(v)).length}<small>/18</small>`;
+  }
+
+  document.getElementById("buildGrid").innerHTML = BUILDS.map((b, i) => {
     const sub = b.id.toLowerCase();
     const host = DOMAIN ? `${sub}.${esc(DOMAIN)}` : `${sub}.&lt;domain&gt;`;
     const live = b.liveUrl || (DOMAIN ? `https://${sub}.${DOMAIN}` : "");
@@ -572,6 +603,21 @@ Provide the complete code, the Supabase setup (SQL for the tables and storage), 
             <div><dt>Model</dt><dd>${b.model}</dd></div>
             <div><dt>Effort</dt><dd>${b.effort}</dd></div>
             <div><dt>Host</dt><dd><code>${host}</code></dd></div>
+          </dl>
+          <dl class="bstats">
+            <div class="bstat time">
+              <dt>Build time</dt>
+              <dd>${fmtTime(b.minutes)}</dd>
+              <div class="bar" aria-hidden="true"><i style="width:${b.minutes ? Math.max(4, b.minutes / maxMinutes * 100) : 0}%"></i></div>
+            </div>
+            <div class="bstat">
+              <dt>Tests passed</dt>
+              <dd>${passCount(i)}</dd>
+            </div>
+            <div class="bstat">
+              <dt>Follow-ups</dt>
+              <dd${b.followUps == null ? ' class="na"' : ""}>${b.followUps == null ? "—" : b.followUps}</dd>
+            </div>
           </dl>
           <details class="prompt">
             <summary>Exact prompt used</summary>
