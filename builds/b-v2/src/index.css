@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Curio design tokens. Semantic colours switch automatically in dark mode.
+   (All styling lives in this compiled stylesheet: no inline <style> tags,
+   which keeps the strict `style-src 'self'` CSP working.)
+--------------------------------------------------------------------------- */
+:root {
+  --bg: #f6f6f3;
+  --surface: #ffffff;
+  --surface-2: #f0efeb;
+  --line: #e4e2dc;
+  --ink: #17161c;
+  --muted: #6b6975;
+  --brand: #5b47f5;
+  --brand-hover: #4a36e4;
+  --brand-soft: #eeebff;
+  --brand-ink: #3d2dbd;
+  --accent: #ff6a3d;
+  --accent-soft: #fff0ea;
+  --success: #12804a;
+  --success-soft: #e7f6ee;
+  --danger: #d23a41;
+  --danger-soft: #fdecec;
+  --warning: #a8670d;
+  --warning-soft: #fdf3e2;
+  --shadow-color: 240 10% 20%;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0d12;
+    --surface: #17161d;
+    --surface-2: #201f28;
+    --line: #2d2b36;
+    --ink: #f3f2f7;
+    --muted: #a3a1ae;
+    --brand: #6f5cff;
+    --brand-hover: #8070ff;
+    --brand-soft: #251f47;
+    --brand-ink: #c3baff;
+    --accent: #ff8a63;
+    --accent-soft: #3a2119;
+    --success: #4cd38b;
+    --success-soft: #133024;
+    --danger: #ff7076;
+    --danger-soft: #3a1719;
+    --warning: #f2b64f;
+    --warning-soft: #352713;
+    --shadow-color: 0 0% 0%;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Plus Jakarta Sans Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+
+  --shadow-soft: 0 1px 2px hsl(var(--shadow-color) / 0.06), 0 4px 16px -4px hsl(var(--shadow-color) / 0.1);
+  --shadow-lift: 0 2px 4px hsl(var(--shadow-color) / 0.06), 0 16px 40px -12px hsl(var(--shadow-color) / 0.22);
+
+  --animate-fade-in: fade-in 0.35s ease-out both;
+  --animate-rise: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-pop: pop 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--brand) 25%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-soft);
+  }
+  .hero-glow {
+    background:
+      radial-gradient(60rem 30rem at 10% -10%, color-mix(in oklab, var(--brand) 22%, transparent), transparent 60%),
+      radial-gradient(40rem 26rem at 95% 10%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 60%),
+      radial-gradient(30rem 20rem at 50% 120%, color-mix(in oklab, var(--brand) 12%, transparent), transparent 70%);
+  }
+  .glass {
+    background: color-mix(in oklab, var(--bg) 78%, transparent);
+    backdrop-filter: saturate(160%) blur(16px);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--line) 50%, var(--surface-2) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+  .select-chevron {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a8894' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

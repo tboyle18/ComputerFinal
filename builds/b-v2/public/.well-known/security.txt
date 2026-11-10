@@ -1,0 +1,6 @@
+# Responsible disclosure: please report vulnerabilities privately.
+# Replace the placeholders below before going live (RFC 9116).
+Contact: mailto:security@your-domain.example
+Expires: 2027-11-09T00:00:00.000Z
+Preferred-Languages: en
+Policy: https://your-domain.example/security-policy

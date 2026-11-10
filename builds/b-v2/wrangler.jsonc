@@ -1,0 +1,30 @@
+// Cloudflare Workers configuration for Curio.
+// Docs: https://developers.cloudflare.com/workers/static-assets/
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "curio-marketplace",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-10-01",
+
+  // The built React app. The Worker runs FIRST for every request so it can
+  // attach security headers (CSP, HSTS, …) to every response, including the
+  // SPA fallback page.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+
+  // Public, non-secret values used to build the Content-Security-Policy.
+  // NOTE: no secrets live in Cloudflare at all. The Supabase secret key stays
+  // inside Supabase (Edge Functions).
+  "vars": {
+    "SUPABASE_URL": "https://YOUR-PROJECT-REF.supabase.co",
+    "TURNSTILE_ENABLED": "false"
+  },
+
+  // Don't expose per-version preview URLs publicly.
+  "preview_urls": false,
+  "observability": { "enabled": true }
+}

@@ -26,3 +26,6 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Original build folders kept locally (code lives in builds/)
+* copy/

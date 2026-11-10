@@ -1,0 +1,36 @@
+# Cloudflare Pages Configuration
+#
+# Deploy with: wrangler pages deploy dist --project-name=marketplace
+# Or connect GitHub repo to Cloudflare dashboard for automatic deploys
+#
+# Required environment variables:
+# - VITE_SUPABASE_URL
+# - VITE_SUPABASE_ANON_KEY
+
+name = "marketplace"
+type = "javascript"
+
+# Build configuration for Pages
+[build]
+command = "npm run build"
+cwd = "."
+watch_paths = ["src/**/*.{ts,tsx,css}"]
+
+# Environment variables by environment
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[env.staging]
+vars = { ENVIRONMENT = "staging" }
+
+[env.development]
+vars = { ENVIRONMENT = "development" }
+
+# Analytics
+[analytics]
+enabled = true
+
+# Cloudflare Pages settings
+# These are set automatically when connected via GitHub
+# account_id = "your-account-id"  # Get from Cloudflare dashboard
+# project_name = "marketplace"
