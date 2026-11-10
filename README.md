@@ -42,3 +42,21 @@ results/       Results grid, raw scan output, screenshots
 To deploy it on Cloudflare: Workers & Pages → Create → Import a repository → pick this repo. Name the project `computerfinal` (it must match `name` in `wrangler.jsonc`), leave the build command empty, and keep the deploy command as `npx wrangler deploy`. `wrangler.jsonc` tells Cloudflare to serve only the `homepage/` folder. Put the homepage and every build behind Cloudflare Access so only the team and instructor can reach them.
 
 To view it locally, open `homepage/index.html` in a browser.
+
+## Live builds
+
+Each build is its own Cloudflare Worker on its own subdomain, so builds never share cookies or storage:
+
+| Build | URL |
+|---|---|
+| A-V1 | https://a-v1.boyletb8.workers.dev |
+| A-V2 | https://a-v2.boyletb8.workers.dev |
+| B-V1 | https://b-v1.boyletb8.workers.dev |
+| B-V2 | https://b-v2.boyletb8.workers.dev |
+
+The front ends are deployed **without a working backend** for now. None of the builds had a hosted Supabase project, so they were built with a placeholder `VITE_SUPABASE_URL`. Pages load, but sign-up, listings and other data calls fail until each build gets its own Supabase project and is rebuilt with its real URL and publishable key.
+
+How they were deployed (no build files were edited):
+- `npm ci`, then `npm run build` with the Supabase settings passed as environment variables.
+- A-V1, A-V2 and B-V1: `dist/` deployed as a static site, using a separate Wrangler config outside the repo. The Haiku builds' own `wrangler.toml` files use an old format Wrangler 4 rejects.
+- B-V2: deployed with its own `wrangler.jsonc` and `wrangler deploy --name b-v2`. Its build refuses a non-`https://` Supabase URL, which is its own security check.

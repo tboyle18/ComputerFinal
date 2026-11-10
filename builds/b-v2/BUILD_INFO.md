@@ -5,7 +5,7 @@
 | Model | Opus 5.5 (extra effort + UltraCode) |
 | Prompt | V2: security line + base prompt ([prompts/v2-security.md](../../prompts/v2-security.md)) |
 | Lab URL | `https://b-v2.<domain>` |
-| Build time | _not yet_ |
+| Build time | over 1 hour |
 | Generated on | _not yet_ |
 
 This folder holds the code exactly as the AI generated it. Commit it as generated, before any testing.
