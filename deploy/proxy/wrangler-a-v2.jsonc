@@ -1,0 +1,17 @@
+// Deploys build a-v2 with the Supabase proxy. Run from this folder: npx wrangler deploy -c wrangler-a-v2.jsonc
+{
+  "name": "a-v2",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "../../builds/a-v2/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/sb/*"]
+  },
+  "vars": {
+    "SUPABASE_UPSTREAM": "https://yuysazrdltissqvdgccx.supabase.co",
+    "SCHEMA": "a_v2",
+    "BUCKET_PREFIX": "a-v2"
+  }
+}

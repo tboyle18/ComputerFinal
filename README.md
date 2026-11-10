@@ -54,9 +54,9 @@ Each build is its own Cloudflare Worker on its own subdomain, so builds never sh
 | B-V1 | https://b-v1.boyletb8.workers.dev |
 | B-V2 | https://b-v2.boyletb8.workers.dev |
 
-The front ends are deployed **without a working backend** for now. None of the builds had a hosted Supabase project, so they were built with a placeholder `VITE_SUPABASE_URL`. Pages load, but sign-up, listings and other data calls fail until each build gets its own Supabase project and is rebuilt with its real URL and publishable key.
+All four builds share one free Supabase project (`Computer-final`), each in its own database schema. See [deploy/README.md](deploy/README.md) for how this works and what differs from giving each build its own backend.
 
 How they were deployed (no build files were edited):
 - `npm ci`, then `npm run build` with the Supabase settings passed as environment variables.
-- A-V1, A-V2 and B-V1: `dist/` deployed as a static site, using a separate Wrangler config outside the repo. The Haiku builds' own `wrangler.toml` files use an old format Wrangler 4 rejects.
+- A-V1, A-V2 and B-V1: deployed with the proxy Worker and configs in `deploy/proxy/`. The Haiku builds' own `wrangler.toml` files use an old format Wrangler 4 rejects.
 - B-V2: deployed with its own `wrangler.jsonc` and `wrangler deploy --name b-v2`. Its build refuses a non-`https://` Supabase URL, which is its own security check.
