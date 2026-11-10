@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Model | Haiku 4.5 (low effort) |
-| Prompt | V2: security line + base prompt ([prompts/v2-security.md](../../prompts/v2-security.md)) |
+| Prompt | V2: security paragraph + base prompt ([prompts/v2-security.md](../../prompts/v2-security.md)) |
 | Lab URL | `https://a-v2.<domain>` |
 | Build time | ~10 min |
 | Generated on | _not yet_ |

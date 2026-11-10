@@ -4,14 +4,14 @@
 
 We had two AI models build the same online marketplace from two prompts (4 builds total). Each build goes through one fixed security test plan, and we compare which vulnerabilities each one ships with.
 
-> **Research question:** Does one added line asking for security change what an AI-built web app ships with?
+> **Research question:** Does one added paragraph asking for security change what an AI-built web app ships with?
 
 | Build | Model | Prompt |
 |---|---|---|
 | [A-V1](builds/a-v1) | Haiku 4.5, low effort | [V1: base](prompts/v1-base.md) |
-| [A-V2](builds/a-v2) | Haiku 4.5, low effort | [V2: security line + base](prompts/v2-security.md) |
+| [A-V2](builds/a-v2) | Haiku 4.5, low effort | [V2: security paragraph + base](prompts/v2-security.md) |
 | [B-V1](builds/b-v1) | Opus 5.5, extra effort + UltraCode | [V1: base](prompts/v1-base.md) |
-| [B-V2](builds/b-v2) | Opus 5.5, extra effort + UltraCode | [V2: security line + base](prompts/v2-security.md) |
+| [B-V2](builds/b-v2) | Opus 5.5, extra effort + UltraCode | [V2: security paragraph + base](prompts/v2-security.md) |
 
 ## Repo layout
 

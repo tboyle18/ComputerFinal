@@ -301,7 +301,7 @@
 
     <div class="rq">
       <div class="label">// Research question</div>
-      <p>Does <em>one added line</em> asking for security change what an AI-built web app ships with?</p>
+      <p>Does <em>one added paragraph</em> asking for security change what an AI-built web app ships with?</p>
     </div>
 
     <div class="stats">
@@ -331,15 +331,15 @@
     <div class="sec-head">
       <div class="sec-num">02 / Design</div>
       <div>
-        <h2>One variable</h2>
-        <p class="sub">A 2 × 2 design. The only thing that changes between V1 and V2 is a security paragraph at the top of the prompt.</p>
+        <h2>Two models, two prompts, four builds</h2>
+        <p class="sub">Only the security paragraph changes. Stack, features, base prompt and coding tool stay the same.</p>
       </div>
     </div>
 
     <div class="matrix" role="table" aria-label="Build matrix">
       <div class="colh" role="columnheader">Model</div>
       <div class="colh" role="columnheader">V1 · Base prompt</div>
-      <div class="colh" role="columnheader">V2 · + Security line</div>
+      <div class="colh" role="columnheader">V2 · + Security paragraph</div>
 
       <div class="rowh" role="rowheader"><b>Haiku 4.5</b><span>Low effort</span></div>
       <div class="cell v1" role="cell">A-V1</div>
@@ -385,7 +385,7 @@
       </div>
     </div>
     <ol class="steps">
-      <li><b>Lock the spec</b><span>Pick the models and coding tool, write the feature list, base prompt and security line.</span></li>
+      <li><b>Lock the spec</b><span>Pick the models and coding tool, write the feature list, base prompt and security paragraph.</span></li>
       <li><b>Write and lock the test plan</b><span>Exact steps and payloads for every test, committed to the repo first.</span></li>
       <li><b>Generate the 4 builds</b><span>Fresh session per build. Every prompt and follow-up logged word for word.</span></li>
       <li><b>Check feature parity</b><span>One logged follow-up per missing feature, and never one about security.</span></li>
@@ -597,7 +597,7 @@ Provide the complete code, the Supabase setup (SQL for the tables and storage), 
       <article class="card ${b.variant}">
         <div class="card-band">
           <div class="build-id">${b.id}</div>
-          <div class="variant">${b.variant === "v2" ? "V2<br>+ Security line" : "V1<br>Base prompt"}</div>
+          <div class="variant">${b.variant === "v2" ? "V2<br>+ Security paragraph" : "V1<br>Base prompt"}</div>
         </div>
         <div class="card-body">
           <dl class="meta">

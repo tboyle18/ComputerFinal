@@ -1,4 +1,4 @@
-# V2: security line + base prompt
+# V2: security paragraph + base prompt
 
 Used for builds **A-V2** and **B-V2**. The only difference from V1 is the first paragraph. Paste the text inside the block exactly, with no edits.
 
